@@ -9,7 +9,8 @@
     "lint": "eslint . --config .eslintrc.json --ext js,jsx --max-warnings 0",
     "preview": "vite preview",
     "prebuild": "npm run lint",
-    "test": "echo 'No tests yet' && exit 0"
+    "test": "echo 'No tests yet' && exit 0",
+    "lint:fix": "eslint . --config .eslintrc.json --ext js,jsx --fix"
   },
   "dependencies": {
     "framer-motion": "10.16.4",
