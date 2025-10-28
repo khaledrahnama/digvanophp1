@@ -29,23 +29,21 @@ jobs:
         cd frontend
         npm install @react-three/fiber@8.15.0 @react-three/drei@9.56.21 three@0.158.0 terser --legacy-peer-deps --force
         
-    - name: 🏗️ Build project
+    # ↓↓↓ REPLACE YOUR CURRENT BUILD STEP WITH THIS ↓↓↓
+    - name: 🏗️ Build with correct base path
       run: |
         cd frontend
         npm pkg delete scripts.prebuild
-        npm run build
+        # Build with correct base path for production
+        npx vite build --base=/
+    # ↑↑↑ REPLACE YOUR CURRENT BUILD STEP WITH THIS ↑↑↑
         
-    # ↓↓↓ ADD THE CHECK STEP HERE ↓↓↓
-    - name: 🔍 Check file permissions
+    - name: 🔍 Verify corrected build
       run: |
         cd frontend
-        echo "=== File permissions in dist/ ==="
-        ls -la dist/
-        echo "=== index.html permissions ==="
-        ls -la dist/index.html
-        echo "=== All files in dist/ ==="
-        find dist/ -type f | head -20
-    # ↑↑↑ ADD THE CHECK STEP HERE ↑↑↑
+        echo "=== Checking index.html paths ==="
+        grep -o 'src="[^"]*"' dist/index.html || true
+        grep -o 'href="[^"]*"' dist/index.html || true
     
     - name: 📤 Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
