@@ -28,48 +28,32 @@ export const ChatProvider = ({ children }) => {
 
     setMessages((prev) => [...prev, userMessage]);
 
-    try {
-      // Simulate AI response - replace with actual API call
-      const response = await fetch("/api/chat.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: message,
-          session_id: localStorage.getItem("chat_session_id") || generateSessionId(),
-        }),
-      });
-
-      const data = await response.json();
+    // Simulate AI response (remove API call for now)
+    setTimeout(() => {
+      const responses = {
+        "What services do you offer?":
+          "We offer AI & Data Solutions, Software Development, IoT Integration, Web & App Development, IT Procurement, and Maintenance services. Check our Services section for details!",
+        "How much does a project cost?":
+          "Project costs vary based on scope. We offer flexible pricing models starting from $10,000. Contact us for a detailed quote tailored to your needs.",
+        "Do you work with startups?":
+          "Absolutely! We love working with startups and offer special packages for early-stage companies. We can help you build your MVP and scale efficiently.",
+        "What's your development process?":
+          "Our process includes: 1) Discovery & Planning, 2) Design & Prototyping, 3) Development & Testing, 4) Deployment, and 5) Ongoing Support.",
+      };
 
       const aiMessage = {
         id: Date.now() + 1,
         type: "ai",
-        content: data.response || "I'm here to help! How can I assist you with Digvano's services today?",
+        content:
+          responses[message] ||
+          "Thanks for your message! I'm here to help you learn about Digvano's services. How can I assist you today?",
         timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, aiMessage]);
-    } catch (error) {
-      const errorMessage = {
-        id: Date.now() + 1,
-        type: "ai",
-        content:
-          "I apologize, but I'm having trouble connecting right now. Please try again later or contact us directly.",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
       setIsLoading(false);
-    }
+    }, 1000);
   }, []);
-
-  const generateSessionId = () => {
-    const sessionId = "session_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem("chat_session_id", sessionId);
-    return sessionId;
-  };
 
   const value = {
     isChatOpen,
