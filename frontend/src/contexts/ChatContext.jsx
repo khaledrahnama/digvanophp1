@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 
+// Create context
 const ChatContext = createContext();
 
+// Custom hook
 export const useChat = () => {
   const context = useContext(ChatContext);
   if (!context) {
@@ -10,6 +12,7 @@ export const useChat = () => {
   return context;
 };
 
+// Provider component
 export const ChatProvider = ({ children }) => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -28,7 +31,7 @@ export const ChatProvider = ({ children }) => {
 
     setMessages((prev) => [...prev, userMessage]);
 
-    // Simulate AI response (remove API call for now)
+    // Simulate AI response
     setTimeout(() => {
       const responses = {
         "What services do you offer?":
@@ -39,6 +42,8 @@ export const ChatProvider = ({ children }) => {
           "Absolutely! We love working with startups and offer special packages for early-stage companies. We can help you build your MVP and scale efficiently.",
         "What's your development process?":
           "Our process includes: 1) Discovery & Planning, 2) Design & Prototyping, 3) Development & Testing, 4) Deployment, and 5) Ongoing Support.",
+        hello: "Hello! I'm your Digvano assistant. How can I help you today?",
+        hi: "Hi there! I'm here to help you learn about Digvano's services. What would you like to know?",
       };
 
       const aiMessage = {

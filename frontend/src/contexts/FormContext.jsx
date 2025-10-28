@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer } from "react";
 
+// Create context
 const FormContext = createContext();
 
 const formReducer = (state, action) => {
@@ -33,6 +34,7 @@ const initialFormState = {
   errors: {},
 };
 
+// Custom hook
 export const useForm = () => {
   const context = useContext(FormContext);
   if (!context) {
@@ -41,6 +43,7 @@ export const useForm = () => {
   return context;
 };
 
+// Provider component
 export const FormProvider = ({ children }) => {
   const [formState, dispatch] = useReducer(formReducer, initialFormState);
 
