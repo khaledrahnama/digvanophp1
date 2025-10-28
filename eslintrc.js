@@ -1,12 +1,10 @@
 module.exports = {
-  root: true,
   env: {
     browser: true,
-    es2020: true,
+    es2021: true,
     node: true,
   },
-  extends: ["eslint:recommended"],
-  ignorePatterns: ["dist", ".eslintrc.js", "vite.config.js"],
+  extends: ["eslint:recommended", "react-app"],
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
@@ -15,19 +13,7 @@ module.exports = {
     },
   },
   rules: {
-    "no-unused-vars": [
-      "error",
-      {
-        vars: "all",
-        args: "after-used",
-        ignoreRestSiblings: true,
-        varsIgnorePattern: "^[A-Z_]", // Allow unused variables that start with uppercase or underscore
-      },
-    ],
-    "no-console": "warn",
-    "react-refresh/only-export-components": "off", // Turn off this rule for context files
+    // Add your custom rules here
   },
-  globals: {
-    process: "readonly", // Define process as a global variable
-  },
+  ignorePatterns: ["dist", "build", "node_modules"],
 };
