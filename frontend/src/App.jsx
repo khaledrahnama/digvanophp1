@@ -9,7 +9,7 @@ import Home from "./pages/Home";
 import ScrollToTop from "./components/utils/ScrollToTop";
 
 // Context Providers
-import { ChatProvider } from "./contexts/ChatContext";
+import { ChatProvider } from "./contexts/ChatContext.jsx";
 import { FormProvider } from "./contexts/FormContext";
 
 /**
