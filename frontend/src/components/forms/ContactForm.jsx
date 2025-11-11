@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import { motion } from "framer-motion";
+import React, { useState } from "react";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -45,32 +45,35 @@ const ContactForm = () => {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
-    // Basic validation
-    if (!formData.name || !formData.email || !formData.message) {
-      setSubmitStatus({
-        type: "error",
-        message: "Please fill in all required fields.",
+    try {
+      const response = await fetch("https://digvano.com/backend/api/contact.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
-      setIsSubmitting(false);
-      return;
-    }
 
-    // Simulate API call
-    setTimeout(() => {
-      setSubmitStatus({
-        type: "success",
-        message: "Thank you for your message! We will get back to you within 24 hours.",
-      });
-      setFormData({
-        name: "",
-        email: "",
-        company: "",
-        service_type: "",
-        budget_range: "",
-        message: "",
-      });
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitStatus({ type: "success", message: result.message });
+        setFormData({
+          name: "",
+          email: "",
+          company: "",
+          service_type: "",
+          budget_range: "",
+          message: "",
+        });
+      } else {
+        setSubmitStatus({ type: "error", message: result.message || "Failed to send message" });
+      }
+    } catch (error) {
+      setSubmitStatus({ type: "error", message: "Network error. Please try again." });
+    } finally {
       setIsSubmitting(false);
-    }, 2000);
+    }
   };
 
   return (
