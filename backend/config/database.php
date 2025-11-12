@@ -1,9 +1,4 @@
 <?php
-/**
- * Database Configuration and Connection Management
- * Secure database handling for Digvano IT services
- */
-
 class Database {
     private $host;
     private $db_name;
@@ -13,10 +8,7 @@ class Database {
     private $options;
 
     public function __construct() {
-        // Load environment-based configuration
         $this->loadConfig();
-        
-        // PDO options for security and performance
         $this->options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -27,61 +19,45 @@ class Database {
         ];
     }
 
-    /**
-     * Load database configuration based on environment
-     */
     private function loadConfig() {
         if (getenv('CLEARDB_DATABASE_URL')) {
-            // Heroku ClearDB configuration
+            // Heroku configuration (not used for Hostinger)
             $url = parse_url(getenv('CLEARDB_DATABASE_URL'));
             $this->host = $url['host'] ?? 'localhost';
             $this->username = $url['user'] ?? 'root';
             $this->password = $url['pass'] ?? '';
             $this->db_name = substr($url['path'] ?? '/digvano', 1);
         } else {
-            // Local development configuration
+            // 🎯 HOSTINGER DATABASE CREDENTIALS - UPDATE THESE! 🎯
             $this->host = 'localhost';
-            $this->db_name = 'digvano';
-            $this->username = 'digvano_user';
-            $this->password = 'secure_password_123';
+            $this->db_name = 'u758823426_digvano'; // Your database name
+            $this->username = 'u758823426_userdigvano'; // Your database username
+            $this->password = 'KkMm4949@@'; // Your database password
         }
     }
 
-    /**
-     * Get database connection
-     * @return PDO|null
-     */
     public function getConnection() {
         $this->conn = null;
-
         try {
             $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->db_name . ";charset=utf8mb4";
             $this->conn = new PDO($dsn, $this->username, $this->password, $this->options);
             
-            // Log successful connection (in development)
             if (ENVIRONMENT === 'development') {
                 error_log("Database connection established successfully");
             }
             
         } catch(PDOException $exception) {
-            // Secure error logging
             error_log("Database connection error: " . $exception->getMessage());
             
-            // User-friendly error message
             if (ENVIRONMENT === 'development') {
                 die("Connection error: " . $exception->getMessage());
             } else {
                 die("Database connection failed. Please try again later.");
             }
         }
-
         return $this->conn;
     }
 
-    /**
-     * Test database connection
-     * @return bool
-     */
     public function testConnection() {
         try {
             $conn = $this->getConnection();
@@ -92,6 +68,5 @@ class Database {
     }
 }
 
-// Global database instance
 $database = new Database();
 ?>
