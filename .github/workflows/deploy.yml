@@ -29,21 +29,33 @@ jobs:
         cd frontend
         npm install @react-three/fiber@8.15.0 @react-three/drei@9.56.21 three@0.158.0 terser --legacy-peer-deps --force
         
-    # ↓↓↓ REPLACE YOUR CURRENT BUILD STEP WITH THIS ↓↓↓
-    - name: 🏗️ Build with correct base path
+    - name: 🛠️ Remove prebuild script
       run: |
         cd frontend
         npm pkg delete scripts.prebuild
-        # Build with correct base path for production
-        npx vite build --base=/
-    # ↑↑↑ REPLACE YOUR CURRENT BUILD STEP WITH THIS ↑↑↑
         
-    - name: 🔍 Verify corrected build
+    - name: 🏗️ Build with correct base path
       run: |
         cd frontend
+        npx vite build --base=./
+        
+    # ↓↓↓ ADD THIS CRUCIAL STEP ↓↓↓
+    - name: 📁 Copy public files to dist
+      run: |
+        cd frontend
+        echo "=== Copying public files to dist ==="
+        cp -r public/* dist/ 2>/dev/null || true
+        echo "=== Files in dist after copy ==="
+        find dist/ -name "*.ico" -o -name "*.png" -o -name "*.html" | sort
+    # ↑↑↑ ADD THIS CRUCIAL STEP ↑↑↑
+        
+    - name: 🔍 Verify build and favicons
+      run: |
+        cd frontend
+        echo "=== Checking favicon files in dist ==="
+        ls -la dist/*.ico dist/*.png 2>/dev/null || echo "No favicon files found"
         echo "=== Checking index.html paths ==="
-        grep -o 'src="[^"]*"' dist/index.html || true
-        grep -o 'href="[^"]*"' dist/index.html || true
+        grep -i "favicon\|icon" dist/index.html || echo "No icon links in index.html"
     
     - name: 📤 Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
