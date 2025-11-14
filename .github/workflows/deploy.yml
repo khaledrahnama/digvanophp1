@@ -28,24 +28,21 @@ jobs:
         npm pkg delete scripts.prebuild
         npx vite build --base=./
     
-    - name: 🔍 DEBUG: Check dist before copy
+    - name: 🔍 DEBUG: Check files before copy
       run: |
         cd frontend
-        echo "=== Dist folder BEFORE copy ==="
-        find dist/ -type f \( -name "*.ico" -o -name "*.png" -o -name "*.html" \) | sort
-        echo "=== Public folder contents ==="
-        find public/ -type f \( -name "*.ico" -o -name "*.png" \) | sort
+        echo "=== Files in public/ ==="
+        ls -la public/ | grep -E "(ico|png)"
+        echo "=== Files in dist/ before copy ==="
+        ls -la dist/ | grep -E "(ico|png|html)" || echo "No matching files"
     
     - name: 📁 Force copy public files
       run: |
         cd frontend
-        echo "=== Copying ALL public files ==="
+        echo "=== Copying public files to dist ==="
         cp -r public/* dist/
-        echo "=== Dist folder AFTER copy ==="
-        find dist/ -type f \( -name "*.ico" -o -name "*.png" -o -name "*.html" \) | sort
-        echo "=== File sizes ==="
-        ls -la dist/favicon.ico 2>/dev/null || echo "favicon.ico not found"
-        ls -la dist/*.png 2>/dev/null || echo "No PNG files found"
+        echo "=== Files in dist/ after copy ==="
+        ls -la dist/ | grep -E "(ico|png)" || echo "No favicon files copied"
     
     - name: 📤 Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
