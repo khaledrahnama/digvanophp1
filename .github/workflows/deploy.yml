@@ -26,7 +26,7 @@ jobs:
       run: |
         cd frontend
         npm pkg delete scripts.prebuild
-        npx vite build --base=./
+        NODE_ENV=production npx vite build 
     
     - name: Check files before copy
       run: |

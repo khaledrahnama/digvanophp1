@@ -17,8 +17,9 @@ export default defineConfig({
         drop_debugger: true,
       },
     },
+    copyPublicDir: true, // ADD THIS LINE
   },
-  base: process.env.NODE_ENV === "production" ? "/Digvanophp1/" : "/",
+  base: "./", // CHANGE THIS LINE - use relative paths
   define: {
     "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development"),
   },
