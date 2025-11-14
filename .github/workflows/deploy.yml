@@ -26,22 +26,21 @@ jobs:
       run: |
         cd frontend
         npm pkg delete scripts.prebuild
-        NODE_ENV=production npx vite build 
+        npx vite build
     
-    - name: Check files before copy
+    - name: Copy ALL favicon files
       run: |
         cd frontend
-        echo "Files in public/"
-        ls -la public/
-        echo "Files in dist before copy"
-        ls -la dist/
-    
-    - name: Copy public files to dist
-      run: |
-        cd frontend
-        cp -r public/* dist/
-        echo "Files in dist after copy"
-        ls -la dist/
+        echo "=== Copying all icon files ==="
+        cp public/favicon.ico dist/
+        cp public/favicon-16x16.png dist/
+        cp public/favicon-32x32.png dist/
+        cp public/apple-touch-icon.png dist/
+        cp public/android-chrome-192x192.png dist/
+        cp public/android-chrome-512x512.png dist/
+        cp public/manifest.json dist/
+        echo "=== Files in dist after copy ==="
+        ls -la dist/*.ico dist/*.png dist/manifest.json 2>/dev/null || echo "No icon files found"
     
     - name: Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
