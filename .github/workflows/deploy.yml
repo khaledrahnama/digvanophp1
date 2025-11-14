@@ -32,9 +32,9 @@ jobs:
       run: |
         cd frontend
         echo "=== Dist folder BEFORE copy ==="
-        find dist/ -type f -name "*.ico" -o -name "*.png" -o -name "*.html" | sort
+        find dist/ -type f \( -name "*.ico" -o -name "*.png" -o -name "*.html" \) | sort
         echo "=== Public folder contents ==="
-        find public/ -type f -name "*.ico" -o -name "*.png" | sort
+        find public/ -type f \( -name "*.ico" -o -name "*.png" \) | sort
     
     - name: 📁 Force copy public files
       run: |
@@ -42,9 +42,10 @@ jobs:
         echo "=== Copying ALL public files ==="
         cp -r public/* dist/
         echo "=== Dist folder AFTER copy ==="
-        find dist/ -type f -name "*.ico" -o -name "*.png" -o -name "*.html" | sort
+        find dist/ -type f \( -name "*.ico" -o -name "*.png" -o -name "*.html" \) | sort
         echo "=== File sizes ==="
-        ls -la dist/favicon.ico dist/*.png 2>/dev/null || echo "Files not found"
+        ls -la dist/favicon.ico 2>/dev/null || echo "favicon.ico not found"
+        ls -la dist/*.png 2>/dev/null || echo "No PNG files found"
     
     - name: 📤 Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
