@@ -17,9 +17,9 @@ export default defineConfig({
         drop_debugger: true,
       },
     },
-    copyPublicDir: true, // ADD THIS LINE
   },
-  base: "./", // CHANGE THIS LINE - use relative paths
+  base: "./",
+  publicDir: "public",
   define: {
     "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development"),
   },
