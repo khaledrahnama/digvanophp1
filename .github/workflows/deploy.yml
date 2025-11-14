@@ -1,4 +1,4 @@
-name: 🚀 Deploy to Hostinger
+name: Deploy to Hostinger
 
 on:
   push:
@@ -9,42 +9,41 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: 🟢 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 18
     
-    - name: 📦 Install dependencies
+    - name: Install dependencies
       run: |
         cd frontend
         npm install --force
     
-    - name: 🏗️ Build project
+    - name: Build project
       run: |
         cd frontend
         npm pkg delete scripts.prebuild
         npx vite build --base=./
     
-    - name: 🔍 DEBUG: Check files before copy
+    - name: Check files before copy
       run: |
         cd frontend
-        echo "=== Files in public/ ==="
-        ls -la public/ | grep -E "(ico|png)"
-        echo "=== Files in dist/ before copy ==="
-        ls -la dist/ | grep -E "(ico|png|html)" || echo "No matching files"
+        echo "Files in public/"
+        ls -la public/
+        echo "Files in dist before copy"
+        ls -la dist/
     
-    - name: 📁 Force copy public files
+    - name: Copy public files to dist
       run: |
         cd frontend
-        echo "=== Copying public files to dist ==="
         cp -r public/* dist/
-        echo "=== Files in dist/ after copy ==="
-        ls -la dist/ | grep -E "(ico|png)" || echo "No favicon files copied"
+        echo "Files in dist after copy"
+        ls -la dist/
     
-    - name: 📤 Deploy to Hostinger
+    - name: Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
         server: ${{ secrets.FTP_SERVER }}
