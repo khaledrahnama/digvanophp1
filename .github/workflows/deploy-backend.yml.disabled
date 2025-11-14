@@ -22,11 +22,9 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./
+        local-dir: ./backend/          # ONLY backend folder!
         server-dir: ./public_html/backend/
         exclude: |
           **/node_modules/**
           **/.git/**
-          **/frontend/**
           **/README.md
-          **/.github/**

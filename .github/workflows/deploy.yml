@@ -20,42 +20,31 @@ jobs:
     - name: 📦 Install dependencies
       run: |
         cd frontend
-        rm -rf node_modules package-lock.json
-        npm cache clean --force
-        npm install --legacy-peer-deps --force
-        
-    - name: 🔧 Install compatible packages
-      run: |
-        cd frontend
-        npm install @react-three/fiber@8.15.0 @react-three/drei@9.56.21 three@0.158.0 terser --legacy-peer-deps --force
-        
-    - name: 🛠️ Remove prebuild script
+        npm install --force
+    
+    - name: 🏗️ Build project
       run: |
         cd frontend
         npm pkg delete scripts.prebuild
-        
-    - name: 🏗️ Build with correct base path
-      run: |
-        cd frontend
         npx vite build --base=./
-        
-    # ↓↓↓ ADD THIS CRUCIAL STEP ↓↓↓
-    - name: 📁 Copy public files to dist
+    
+    - name: 🔍 DEBUG: Check dist before copy
       run: |
         cd frontend
-        echo "=== Copying public files to dist ==="
-        cp -r public/* dist/ 2>/dev/null || true
-        echo "=== Files in dist after copy ==="
-        find dist/ -name "*.ico" -o -name "*.png" -o -name "*.html" | sort
-    # ↑↑↑ ADD THIS CRUCIAL STEP ↑↑↑
-        
-    - name: 🔍 Verify build and favicons
+        echo "=== Dist folder BEFORE copy ==="
+        find dist/ -type f -name "*.ico" -o -name "*.png" -o -name "*.html" | sort
+        echo "=== Public folder contents ==="
+        find public/ -type f -name "*.ico" -o -name "*.png" | sort
+    
+    - name: 📁 Force copy public files
       run: |
         cd frontend
-        echo "=== Checking favicon files in dist ==="
-        ls -la dist/*.ico dist/*.png 2>/dev/null || echo "No favicon files found"
-        echo "=== Checking index.html paths ==="
-        grep -i "favicon\|icon" dist/index.html || echo "No icon links in index.html"
+        echo "=== Copying ALL public files ==="
+        cp -r public/* dist/
+        echo "=== Dist folder AFTER copy ==="
+        find dist/ -type f -name "*.ico" -o -name "*.png" -o -name "*.html" | sort
+        echo "=== File sizes ==="
+        ls -la dist/favicon.ico dist/*.png 2>/dev/null || echo "Files not found"
     
     - name: 📤 Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
