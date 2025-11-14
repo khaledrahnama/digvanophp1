@@ -17,6 +17,8 @@ export default defineConfig({
         drop_debugger: true,
       },
     },
+    // Ensure public files are handled correctly
+    assetsInclude: ["**/*.ico", "**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif"],
   },
   base: "./",
   publicDir: "public",

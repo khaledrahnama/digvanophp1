@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run copy-public",
+    "copy-public": "cp public/*.ico public/*.png public/manifest.json dist/ 2>/dev/null || true",
     "lint": "eslint \"src/**/*.{js,jsx}\" --config .eslintrc.json --max-warnings=0",
     "preview": "vite preview",
     "test": "echo 'No tests yet' && exit 0",
