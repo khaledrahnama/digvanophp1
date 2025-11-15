@@ -1,10 +1,12 @@
 name: 🚀 Deploy Frontend to Hostinger
 
 on:
+  workflow_dispatch: # Manual trigger
   push:
     branches: [ main ]
     paths:
       - 'frontend/**'
+      - '.github/workflows/deploy-frontend.yml'
 
 jobs:
   deploy-frontend:
