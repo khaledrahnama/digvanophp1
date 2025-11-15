@@ -63,10 +63,13 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./frontend/dist/
           server-dir: public_html/
-          dangerous-clean-slate: true
+          dangerous-clean-slate: false
           exclude: |
             **/node_modules/**
             **/.git/**
+            **/backend/**
+          include: |
+            **/*
           log-level: verbose
 
       - name: Deploy Backend
