@@ -1,32 +1,32 @@
 # Digvano Backend - Apache Configuration
 RewriteEngine On
+RewriteBase /
 
 # Security headers
-Header always set X-Content-Type-Options nosniff
-Header always set X-Frame-Options DENY
-Header always set X-XSS-Protection "1; mode=block"
-Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
 
-# API routing
+# API routing - allow direct access to API PHP files
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^api/(.*)$ api/$1.php [L,QSA]
 
-# Prevent direct access to config files
-<Files "*.php">
+# Prevent direct access to config directory files
+<FilesMatch "^config/.*\.php$">
     Order Allow,Deny
     Deny from all
-</Files>
+</FilesMatch>
 
-<Files "index.php">
+# Allow all PHP files (API files and index.php)
+# This is needed for the API to work
+<FilesMatch "\.php$">
     Order Allow,Deny
     Allow from all
-</Files>
-
-<Files "*.config.php">
-    Order Allow,Deny
-    Deny from all
-</Files>
+</FilesMatch>
 
 # Gzip compression
 <IfModule mod_deflate.c>

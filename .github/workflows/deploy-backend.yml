@@ -16,9 +16,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Optional PHP syntax check
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: pdo, pdo_mysql
+
+      - name: PHP syntax check
         run: |
-          find ./backend -name "*.php" -exec php -l {} \;
+          find ./backend -name "*.php" -exec php -l {} \; || exit 1
 
       - name: Deploy Backend via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -27,10 +33,11 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./backend/
-          server-dir: ./public_html/
-          dangerous-clean-slate: true
+          server-dir: ./public_html/backend/
+          dangerous-clean-slate: false
           exclude: |
             **/node_modules/**
             **/.git/**
             **/README.md
+            **/.gitignore
           log-level: verbose
