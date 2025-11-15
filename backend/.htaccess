@@ -2,6 +2,9 @@
 RewriteEngine On
 RewriteBase /backend/
 
+# Ensure this .htaccess is processed
+Options +FollowSymLinks
+
 # Security headers
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options nosniff
