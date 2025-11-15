@@ -1,6 +1,6 @@
 # Digvano Backend - Apache Configuration
 RewriteEngine On
-RewriteBase /
+RewriteBase /backend/
 
 # Security headers
 <IfModule mod_headers.c>
@@ -10,10 +10,20 @@ RewriteBase /
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
 
+# Allow direct access to PHP files
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
 # API routing - allow direct access to API PHP files
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^api/(.*)$ api/$1.php [L,QSA]
+
+# Health check - serve index.php for root backend requests
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/backend/?$
+RewriteRule ^ index.php [L]
 
 # Prevent direct access to config directory files
 <FilesMatch "^config/.*\.php$">

@@ -5,6 +5,10 @@
   RewriteEngine On
   RewriteBase /
   
+  # Exclude backend directory - don't rewrite backend requests
+  RewriteCond %{REQUEST_URI} ^/backend [NC]
+  RewriteRule ^ - [L]
+  
   # Handle Angular and React Router - serve index.html for all routes
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
