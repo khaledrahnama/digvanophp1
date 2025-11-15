@@ -4,21 +4,15 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   
-  # CRITICAL: Skip ALL backend requests - check if file/dir exists in backend first
+  # CRITICAL: Skip ALL /backend requests immediately - no processing
   RewriteCond %{REQUEST_URI} ^/backend [NC]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^backend - [L]
-  
-  # Skip backend requests that are files/directories
-  RewriteCond %{REQUEST_URI} ^/backend [NC]
-  RewriteRule .* - [L]
+  RewriteRule ^ - [L]
   
   # Only process non-backend requests for React Router
   RewriteCond %{REQUEST_URI} !^/backend [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule .* /index.html [L]
+  RewriteRule ^ /index.html [L]
 </IfModule>
 
 # Directory index - ONLY for non-backend paths
