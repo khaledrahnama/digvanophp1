@@ -5,21 +5,23 @@
   RewriteEngine On
   RewriteBase /
   
-  # CRITICAL: Skip ALL backend requests completely - don't process them
+  # CRITICAL: Skip ALL backend requests FIRST - must be before any other rules
   RewriteCond %{REQUEST_URI} ^/backend [NC]
-  RewriteRule ^(.*)$ - [L]
+  RewriteRule .* - [L]
   
   # Only process non-backend requests for React Router
   RewriteCond %{REQUEST_URI} !^/backend [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^(.*)$ /index.html [L]
+  RewriteRule .* /index.html [L]
 </IfModule>
 
-# Enable directory index (but not for backend)
-<If "%{REQUEST_URI} !~ m#^/backend#">
-  DirectoryIndex index.html
-</If>
+# Directory index - but skip if backend
+<IfModule mod_dir.c>
+  <If "%{REQUEST_URI} !~ m#^/backend#">
+    DirectoryIndex index.html
+  </If>
+</IfModule>
 
 # Security headers
 <IfModule mod_headers.c>
@@ -48,3 +50,4 @@
 </IfModule>
 
 
+# Force deployment Sat Nov 15 16:54:03 CET 2025
