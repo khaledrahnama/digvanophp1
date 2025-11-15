@@ -5,15 +5,11 @@
   RewriteEngine On
   RewriteBase /
   
-  # CRITICAL: Exclude backend directory FIRST - don't rewrite backend requests
-  # This must come before any other rewrite rules
-  RewriteCond %{REQUEST_URI} ^/backend [NC,OR]
-  RewriteCond %{REQUEST_URI} ^/backend/ [NC]
-  RewriteRule ^backend - [L]
+  # CRITICAL: Skip all backend requests - let Apache handle them normally
+  RewriteCond %{REQUEST_URI} ^/backend [NC]
+  RewriteRule . - [L]
   
-  # Handle Angular and React Router - serve index.html for all routes
-  # But only if it's NOT a backend request
-  RewriteCond %{REQUEST_URI} !^/backend [NC]
+  # Handle Angular and React Router - serve index.html for all other routes
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
