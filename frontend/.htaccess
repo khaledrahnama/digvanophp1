@@ -16,8 +16,10 @@
   RewriteRule ^(.*)$ /index.html [L]
 </IfModule>
 
-# Enable directory index
-DirectoryIndex index.html
+# Enable directory index (but not for backend)
+<If "%{REQUEST_URI} !~ m#^/backend#">
+  DirectoryIndex index.html
+</If>
 
 # Security headers
 <IfModule mod_headers.c>
