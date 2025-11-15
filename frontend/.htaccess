@@ -5,11 +5,15 @@
   RewriteEngine On
   RewriteBase /
   
-  # Exclude backend directory - don't rewrite backend requests
-  RewriteCond %{REQUEST_URI} ^/backend [NC]
-  RewriteRule ^ - [L]
+  # CRITICAL: Exclude backend directory FIRST - don't rewrite backend requests
+  # This must come before any other rewrite rules
+  RewriteCond %{REQUEST_URI} ^/backend [NC,OR]
+  RewriteCond %{REQUEST_URI} ^/backend/ [NC]
+  RewriteRule ^backend - [L]
   
   # Handle Angular and React Router - serve index.html for all routes
+  # But only if it's NOT a backend request
+  RewriteCond %{REQUEST_URI} !^/backend [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
@@ -43,4 +47,5 @@ DirectoryIndex index.html
   ExpiresByType application/json "access plus 1 hour"
   ExpiresByType text/html "access plus 0 seconds"
 </IfModule>
+
 
