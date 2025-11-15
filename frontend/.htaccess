@@ -3,9 +3,14 @@
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /
   
-  # CRITICAL: Skip ALL backend requests FIRST - must be before any other rules
+  # CRITICAL: Skip ALL backend requests - check if file/dir exists in backend first
+  RewriteCond %{REQUEST_URI} ^/backend [NC]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^backend - [L]
+  
+  # Skip backend requests that are files/directories
   RewriteCond %{REQUEST_URI} ^/backend [NC]
   RewriteRule .* - [L]
   
@@ -16,12 +21,8 @@
   RewriteRule .* /index.html [L]
 </IfModule>
 
-# Directory index - but skip if backend
-<IfModule mod_dir.c>
-  <If "%{REQUEST_URI} !~ m#^/backend#">
-    DirectoryIndex index.html
-  </If>
-</IfModule>
+# Directory index - ONLY for non-backend paths
+DirectoryIndex index.html index.php
 
 # Security headers
 <IfModule mod_headers.c>
