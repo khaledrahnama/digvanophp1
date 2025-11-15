@@ -9,6 +9,22 @@ echo "🧪 Testing Digvano Backend API"
 echo "================================"
 echo ""
 
+# Check if curl is available
+if ! command -v curl &> /dev/null; then
+    echo "❌ Error: curl is not installed. Please install curl first."
+    exit 1
+fi
+
+# Test connectivity first
+echo "🔍 Testing connectivity..."
+if curl -s --head --fail "$BASE_URL/" > /dev/null 2>&1; then
+    echo "✓ Server is reachable"
+else
+    echo "✗ Cannot reach server. Check if backend is deployed."
+    exit 1
+fi
+echo ""
+
 # Colors
 GREEN='\033[0;32m'
 RED='\033[0;31m'
