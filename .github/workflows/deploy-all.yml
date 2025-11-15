@@ -1,0 +1,98 @@
+name: 🚀 Deploy Everything to Hostinger
+
+on:
+  workflow_dispatch: # Manual trigger
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - 'database/**'
+      - '.github/workflows/deploy-all.yml'
+
+jobs:
+  deploy-all:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: pdo, pdo_mysql
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm install --force
+          npm pkg delete scripts.prebuild
+          npx vite build
+          cp -r public/* dist/ || echo "No public folder files found"
+
+      - name: PHP syntax check
+        run: |
+          find ./backend -name "*.php" -exec php -l {} \; || exit 1
+
+      - name: List files to deploy
+        run: |
+          echo "📦 Frontend files:"
+          find ./frontend/dist -type f | head -20
+          echo ""
+          echo "📦 Backend files:"
+          find ./backend -type f | head -20
+          echo ""
+          echo "📊 Frontend files count: $(find ./frontend/dist -type f | wc -l)"
+          echo "📊 Backend files count: $(find ./backend -type f | wc -l)"
+
+      - name: Clean and Deploy Frontend
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./frontend/dist/
+          server-dir: ./public_html/
+          dangerous-clean-slate: true
+          exclude: |
+            **/node_modules/**
+            **/.git/**
+          log-level: verbose
+
+      - name: Deploy Backend
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./backend/
+          server-dir: ./public_html/backend/
+          dangerous-clean-slate: false
+          exclude: |
+            **/node_modules/**
+            **/.git/**
+            **/README.md
+            **/.gitignore
+          log-level: verbose
+
+      - name: Deployment Summary
+        run: |
+          echo "✅ Full deployment completed!"
+          echo ""
+          echo "🌐 Frontend: https://digvano.com/"
+          echo "🔗 Backend Health: https://digvano.com/backend/"
+          echo "🔗 Backend Test: https://digvano.com/backend/quick-test.php"
+          echo ""
+          echo "📋 Next steps:"
+          echo "   1. Test frontend: https://digvano.com/"
+          echo "   2. Test backend: https://digvano.com/backend/quick-test.php"
+          echo "   3. Test API: https://digvano.com/backend/api/services.php"
+

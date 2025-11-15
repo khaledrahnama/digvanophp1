@@ -45,5 +45,7 @@ jobs:
           local-dir: ./frontend/dist/
           server-dir: ./public_html/
           dangerous-clean-slate: true
-          
+          exclude: |
+            **/node_modules/**
+            **/.git/**
           log-level: verbose

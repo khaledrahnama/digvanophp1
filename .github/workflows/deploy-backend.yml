@@ -1,11 +1,13 @@
 name: 🚀 Deploy Backend to Hostinger
 
 on:
+  workflow_dispatch: # Allows manual triggering from GitHub UI
   push:
     branches: [ main ]
     paths:
       - 'backend/**'
       - 'database/**'
+      - '.github/workflows/deploy-backend.yml'
 
 jobs:
   deploy-backend:
@@ -26,6 +28,15 @@ jobs:
         run: |
           find ./backend -name "*.php" -exec php -l {} \; || exit 1
 
+      - name: List files to deploy
+        run: |
+          echo "📦 Files to be deployed:"
+          find ./backend -type f | head -30
+          echo ""
+          echo "📊 Total files: $(find ./backend -type f | wc -l)"
+          echo "📁 Directory structure:"
+          tree -L 3 ./backend || find ./backend -type d | head -20
+
       - name: Deploy Backend via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -41,3 +52,9 @@ jobs:
             **/README.md
             **/.gitignore
           log-level: verbose
+
+      - name: Deployment Summary
+        run: |
+          echo "✅ Backend deployment completed!"
+          echo "🔗 Test your backend at: https://digvano.com/backend/quick-test.php"
+          echo "🔗 Health check: https://digvano.com/backend/"
