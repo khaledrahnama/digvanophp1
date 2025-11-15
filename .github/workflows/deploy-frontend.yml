@@ -35,6 +35,8 @@ jobs:
         run: |
           cd frontend
           cp -r public/* dist/ || echo "No public folder files found"
+          # Copy .htaccess if it exists
+          cp .htaccess dist/ 2>/dev/null || echo ".htaccess not found or already copied"
 
       - name: Deploy Frontend via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4

@@ -37,6 +37,8 @@ jobs:
           npm pkg delete scripts.prebuild
           npx vite build
           cp -r public/* dist/ || echo "No public folder files found"
+          # Copy .htaccess if it exists
+          cp .htaccess dist/ 2>/dev/null || echo ".htaccess not found or already copied"
 
       - name: PHP syntax check
         run: |
